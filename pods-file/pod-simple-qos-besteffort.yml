@@ -1,0 +1,39 @@
+# pod-simple-qos-besteffort.yml
+#
+apiVersion: v1
+kind: Pod
+metadata:
+  name: utrains
+  namespace: geolocation
+  labels:
+   app: utrains
+spec:
+  containers:
+    - name: utrains-app
+      image: 076892551558.dkr.ecr.us-east-1.amazonaws.com/geolocation_ecr_rep:latest
+#
+# Creating a simple pod. Which has apache
+# configured inside it. There are no cpu or
+# memory limits applied on pod. So kubernetes
+# cluster will try to give the best resources
+# available. But cannot guarantee any number.
+#
+# QoS = Best Effort 
+#
+# create namespace geolocation -
+# kubectl create namespace geolocation
+#
+# run the pod
+# kubectl create -f pod-simple-qos-besteffort.yml
+#
+# check the pod
+# kubectl get pods --namespace=geolocation
+#
+# get details about pod
+# kubectl describe pod/utrains --namespace=geolocation
+# 
+# Check the "QoS Class" value. 
+#
+# delete pod
+# kubectl delete pod/utrains --namespace=geolocation
+#

@@ -1,0 +1,18 @@
+# webserver-hpa.yml
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  creationTimestamp: null
+  name: webserver
+  selfLink: /apis/autoscaling/v1/namespaces/default/horizontalpodautoscalers/webserver
+spec:
+  maxReplicas: 4
+  minReplicas: 2
+  scaleTargetRef:
+    apiVersion: extensions/v1beta1
+    kind: ReplicaSet
+    name: webserver
+  targetCPUUtilizationPercentage: 80
+status:
+  currentReplicas: 0
+  desiredReplicas: 0

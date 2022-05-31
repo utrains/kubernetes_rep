@@ -1,0 +1,40 @@
+# pod-with-cpu-exceed.yml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: utrains
+  namespace: geolocation
+  labels:
+   app: utrains
+spec:
+  containers:
+    - name: utrains-app
+      image: 076892551558.dkr.ecr.us-east-1.amazonaws.com/geolocation_ecr_rep:latest
+      resources:
+        limits:
+          cpu: "4"
+        requests:
+          cpu: "4"
+
+
+#
+# the pod wants 4 cpu's which is not available
+# on any node in the cluster. So it should fail
+# with "insufficient cpu" message.
+#
+# create namespace geolocation -
+# kubectl create namespace geolocation
+#
+# run the pod
+# kubectl create -f pod-with-cpu-exceed.yml
+#
+# check the pod
+# kubectl get pods
+#
+# get details about pod
+# kubectl describe pod/utrains --namespace=geolocation
+#
+# delete pod
+# kubectl delete pod/utrains --namespace=geolocation
+#

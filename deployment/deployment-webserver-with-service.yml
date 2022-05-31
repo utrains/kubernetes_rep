@@ -1,0 +1,77 @@
+# deployment-webserver-with-service.yml
+# we are deploying a webserver with 2 replicas
+# and then exposing the webserver service using
+# service resource
+#
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nn-web
+  namespace: geolocation
+spec:
+  selector:
+    matchLabels:
+      run: nn-web
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        run: nn-web
+    spec:
+      containers:
+      - name: nn-webserver
+        image: 076892551558.dkr.ecr.us-east-1.amazonaws.com/geolocation_ecr_rep:latest
+        ports:
+        - containerPort: 80
+
+
+#
+# Creating a deployment with two pods and then
+# exposing the webserver using service resource type.
+#
+# create namespace geolocation -
+# kubectl create namespace geolocation
+#
+# initialize the deployment
+# kubectl create -f deployment-webserver-with-service.yml
+#
+# check the deployment
+# kubectl get deployment --namespace=geolocation
+#
+# get more details about the deployment
+# kubectl describe deployments nn-web --namespace=geolocation
+#
+# get details about pods initialized by deployment
+# kubectl get pods --namespace=geolocation
+#
+# get information about all pods created by deployment nn-web
+# kubectl get pods -l run=nn-web -o wide --namespace=geolocation
+# 
+# get the IP address of all pods initialized by deployment nn-web
+# kubectl get pods -l run=nn-web -o yaml --namespace=geolocation | grep podIP
+#
+# expose the deployment using service resource
+# kubectl expose deployment/nn-web --namespace=geolocation
+#
+# get information about the service (note down the Cluster IP)
+# kubectl get service nn-web --namespace=geolocation
+#
+# get detailed information about service, where:
+# Endpoints - are the pod's IP address 
+# IP - is the service IP address, where we will hit (call it Cluster IP)
+# kubectl describe service nn-web --namespace=geolocation
+#
+# check endpoints (the pods which the service will hit) for the service
+# kubectl get ep nn-web --namespace=geolocation
+#
+# You can go to ANY node in the cluster and use 
+# curl http://CLUSTER-IP
+#
+# --- You should be able to get the website contents ---
+#
+# delete the deployment
+# kubectl delete deployment nn-web --namespace=geolocation
+#
+# delete the service
+# kubectl delete service nn-web --namespace=geolocation
+#

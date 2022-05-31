@@ -1,0 +1,39 @@
+# pod-with-cpu-limits.yml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: utrains
+  namespace: geolocation
+  labels:
+   app: utrains
+spec:
+  containers:
+    - name: utrains-app
+      image: 076892551558.dkr.ecr.us-east-1.amazonaws.com/geolocation_ecr_rep:latest
+      resources:
+        limits:
+          cpu: "1"
+        requests:
+          cpu: "0.5"
+
+#
+# Pod will start with 0.5 cpu share and can 
+# go upto 1 cpu. Well within the permissible
+# limits.
+#
+# create namespace geolocation -
+# kubectl create namespace geolocation
+#
+# run the pod
+# kubectl create -f pod-with-cpu-limits.yml
+#
+# check the pod
+# kubectl get pods
+#
+# get details about pod
+# kubectl describe pod/utrains --namespace=geolocation
+#
+# delete pod
+# kubectl delete pod/utrains --namespace=geolocation
+#

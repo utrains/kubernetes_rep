@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webserver
+spec:
+  selector:
+    matchLabels:
+      run: webserver
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+#uncomment below two lines when you update to a new image
+#      annotations:
+#        kubernetes.io/change-cause: "updated to new version"
+      labels:
+        run: webserver
+    spec:
+      containers:
+        - name: webserver
+#for checking rolling updates first try with
+#         image: 076892551558.dkr.ecr.us-east-1.amazonaws.com/geolocation_ecr_rep:latest
+#create deployment and check it, then change 
+#         image: 076892551558.dkr.ecr.us-east-1.amazonaws.com/geolocation_ecr_rep:latest
+          image: 076892551558.dkr.ecr.us-east-1.amazonaws.com/geolocation_ecr_rep:latest
+          livenessProbe:
+            exec:
+              command:
+              - cat 
+              - /var/www/html/index.html
+            initialDelaySeconds: 10
+            timeoutSeconds: 3
+            periodSeconds: 20
+            failureThreshold: 3
+          resources:
+            requests: #request means minimum
+              cpu: "100m"
+              memory: "128Mi"
+            limits: #limits means maximum
+              cpu: "200m"
+              memory: "256Mi"
+          ports:
+            - containerPort: 80
+              name: http
+              protocol: TCP
+
+# IMPORTANT POINTS #
+#to apply - kubectl create -f deployment-one.yml
+#to inspect - kubectl get deployment
+#to describe - kubectl describe deployment webserver
+#to inspect replicaset created by this deployment -  kubectl get rs --selector=run=webserver
+#to manually scale the deployment - kubectl scale deployment webserver --replicas=3
+#NOW try decreasing the rs using - kubectl scale rs <rs-name> --replicas=1
+#Get the value of rs again using - kubectl get rs --selector=run-webserver
+#NOTICE the relationship between deployment and replicaset
+#to get a YAML format of your deployment, in detail:
+#   kubectl get deployment webserver --export -o yaml > webserver-deployment.yml
+# to get rollout status - kubectl rollout status deployment webserver
+# to pause deployment - kubectl rollout pause deployment webserver
+# to resume deployment - kubectl rollout resume deployment webserver
+# to get deployment history - kubectl rollout history deployment webserver
+# to delete deployment - kubectl delete deployment webserver
+# whenever updating deployment use - kubectl apply -f deployment-one.yml
+#

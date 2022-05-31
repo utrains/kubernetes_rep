@@ -1,0 +1,34 @@
+# namespace-cpu-limit.yml
+
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: cpu-limit-range
+  namespace: geolocation
+spec:
+  limits:
+  - default:
+      cpu: 1
+    defaultRequest:
+      cpu: 0.4
+    type: Container
+
+#
+# create namespace first using -
+# kubectl create namespace geolocation
+#
+# apply it using - 
+# kubectl apply -f namespace-cpu-limit.yml
+# 
+# check limits -
+# kubectl get limitranges --namespace=geolocation
+#
+# get details of limits -
+# kubectl describe limitranges cpu-limit-range --namespace=geolocation
+#
+# delete cpu limits - 
+# kubectl delete limitranges cpu-limit-range --namespace=geolocation
+#
+# delete namespace -
+# kubectl delete namespace geolocation
+#

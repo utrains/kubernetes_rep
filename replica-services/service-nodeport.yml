@@ -1,0 +1,85 @@
+# service-nodeport.yml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-svc
+  namespace: geolocation
+  labels:
+    app: hello-nn
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    nodePort: 30003
+    protocol: TCP
+  selector:
+    app: hello-nn
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-deploy
+  namespace: geolocation
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: hello-nn
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: hello-nn
+    spec:
+      containers:
+      - name: webserver-pod
+        image: 076892551558.dkr.ecr.us-east-1.amazonaws.com/geolocation_ecr_rep:latest
+        ports:
+        - containerPort: 80
+
+#
+# Creating a webserver deployment having 2 replicas
+# and a nodeport service to access that webserver. 
+#
+#
+# create namespace geolocation -
+# kubectl create namespace geolocation
+#
+# create deployment and service
+# kubectl create -f service-nodeport.yml
+#
+# check the deployment
+# kubectl get deploy --namespace=geolocation
+#
+# also check that 2 pods are running as per deployment
+# kubectl get pods --namespace=geolocation
+#
+# check the service inside geolocation namespace
+# kubectl get svc --namespace=geolocation
+#
+# get details about the service
+# kubectl describe service web-svc --namespace=geolocation
+# (note down the endpoints, these are the actual pod IP's
+#  where the request will hit)
+#
+# get details about service endpoints
+# kubectl get endpoints web-svc --namespace=geolocation
+#
+# go to a node where the pod is deployed and access service
+# using cluster IP
+# curl http://<cluster-ip>:80
+# (because our containerPort is 80)
+#
+# we can also access the application using nodePort (30003)
+# with NodeIP:30003
+# curl http://<nodeip>:30003
+#
+# delete deployment and service
+# kubectl delete -f service-nodeport.yml
+#
