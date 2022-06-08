@@ -1,5 +1,5 @@
 #!/bin/bash
-#/* **************** Network Nuts k8snode.sh **************** */
+#/* ****************Utrains k8snode.sh **************** */
 #!/bin/bash -x
 ## v1.19.0 CKA
 echo  '\033[1mThis Script will work on Ubuntu 18.04\033[0m'
